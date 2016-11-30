@@ -14,20 +14,38 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 		// Strip multiple newlines
 		nodes = stripNewLines(nodes);
 
-		// Sort the nodes
+		// Sort the nodes alphabetically
 		nodes.sort(dynamicSort('prop'));
 
 		// Add a new line after variable declarations
 		nodes = addNewLineAfterVars(nodes);
 	}
 
+	/**
+	 * Remove extraneous newlines
+	 * 
+	 * @param  {postcss.Rule} nodes
+	 * @return {postcss.Rule} nodes
+	 */
 	function stripNewLines(nodes) {
 		each(nodes, (node, i) => {
 			node.raws.before = node.raws.before.replace(/\n\s*\n/g, '\n');
+
+
+			// Remove extraneous newlines on the last declaration if they exist
+			if (! node.next() && node.raws.after) {
+				node.raws.after = node.raws.after.replace(/\n\s*\n/g, '\n');
+			}
 		});
+
 		return nodes;
 	}
 
+	/**
+	 * Add a new line after variable declaration blocks
+	 * 
+	 * @param {postcss.Rule} nodes
+	 */
 	function addNewLineAfterVars(nodes) {
 		let c = 0;
 
@@ -38,9 +56,11 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 		});
 
 		// Ensure previous block is a var declaration
-		if (nodes[(c - 1)] && isVar(nodes[(c - 1)].prop)) {
+		if (nodes[c].prev() && isVar(nodes[c].prev().prop)) {
 			nodes[c].raws.before = nodes[c].raws.before.replace('\n', '\n\n');
 		}
+
+		return nodes;
 	}
 
 	/**
@@ -97,10 +117,7 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 
 	return (root, res) => {
 		root.walkRules(rule => {
-			// TODO: make sure this is necessary 
-			if (rule.type === 'rule') {
-				alphabetize(rule.nodes);
-			}
+			alphabetize(rule.nodes);
 		});
 	}
 });
