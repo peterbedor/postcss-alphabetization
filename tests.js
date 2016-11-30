@@ -203,6 +203,52 @@ describe('Alphabetization', () => {
 			}`);
 	});
 
+	it('should ignore top level variables', () => {
+		return process(
+			`$var: 20px;
+			$beta.nested: 50px;
+			$alpha: 10px;
+
+			.sel {
+				z-index: 10;
+				text-align: center;
+				background-color: red;
+				vertical-align: middle;
+			}`,
+			`$var: 20px;
+			$beta.nested: 50px;
+			$alpha: 10px;
+
+			.sel {
+				background-color: red;
+				text-align: center;
+				vertical-align: middle;
+				z-index: 10;
+			}`);
+	});
+
+	it('should move variable properties to the top', () => {
+		return process(
+			`.sel {
+				z-index: 10;
+				text-align: center;
+				background-color: red;
+				$(zed): purple;
+				vertical-align: middle;
+				$(alpha): red;
+				$(bravo): orange !ignore;
+			}`,
+			`.sel {
+				$(alpha): red;
+				$(zed): purple;
+				background-color: red;
+				text-align: center;
+				vertical-align: middle;
+				z-index: 10;
+				$(bravo): orange !ignore;
+			}`);
+	});
+
 	it('should ignore !ignore', () => {
 		return process(
 			`.sel {
@@ -282,52 +328,6 @@ describe('Alphabetization', () => {
 				!789test: 30px;
 				123test: 30px;
 				fcool: 50px;
-			}`);
-	});
-
-	it('should move variable properties to the top', () => {
-		return process(
-			`.sel {
-				z-index: 10;
-				text-align: center;
-				background-color: red;
-				$(zed): purple;
-				vertical-align: middle;
-				$(alpha): red;
-				$(bravo): orange !ignore;
-			}`,
-			`.sel {
-				$(alpha): red;
-				$(zed): purple;
-				background-color: red;
-				text-align: center;
-				vertical-align: middle;
-				z-index: 10;
-				$(bravo): orange !ignore;
-			}`);
-	});
-
-	it('should ignore top level variables', () => {
-		return process(
-			`$var: 20px;
-			$beta.nested: 50px;
-			$alpha: 10px;
-
-			.sel {
-				z-index: 10;
-				text-align: center;
-				background-color: red;
-				vertical-align: middle;
-			}`,
-			`$var: 20px;
-			$beta.nested: 50px;
-			$alpha: 10px;
-
-			.sel {
-				background-color: red;
-				text-align: center;
-				vertical-align: middle;
-				z-index: 10;
 			}`);
 	});
 });
