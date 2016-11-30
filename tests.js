@@ -35,6 +35,38 @@ describe('Alphabetization', () => {
 			}`)
 	});
 
+	it('should alphabetize dashed properties', () => {
+		return process(
+			`.sel {
+				font-weight: bold;
+				background-origin: red;
+				font-size: 10px;
+				background-color: red;
+				font-family: Helvetica;
+				background-attachment: fixed;
+				background-size: cover;
+				font: 10/10px;
+				background-position: center center;
+				background-clip: none;
+				font-variant: italic;
+				background-repeat: repeat-x;
+			}`,
+			`.sel {
+				background-attachment: fixed;
+				background-clip: none;
+				background-color: red;
+				background-origin: red;
+				background-position: center center;
+				background-repeat: repeat-x;
+				background-size: cover;
+				font: 10/10px;
+				font-family: Helvetica;
+				font-size: 10px;
+				font-variant: italic;
+				font-weight: bold;
+			}`)
+		});
+
 	it('should alphabetize nested selector properties', () => {
 		return process(
 			`.sel {
@@ -101,6 +133,49 @@ describe('Alphabetization', () => {
 			}`)
 	});
 
+	it('should add new line after variable declarations', () => {
+		return process(
+			`.sel {
+				$var: 10px;
+				$alpha: 10%;
+				vertical-align: middle;
+				backgorund-color: $alpha;
+			}`,
+			`.sel {
+				$var: 10px;
+				$alpha: 10%;
+
+				backgorund-color: $alpha;
+				vertical-align: middle;
+			}`);
+	});
+
+	it('should remove extraneous new lines', () => {
+		return process(
+			`.sel {
+				$var: 20px;
+				&__nested {
+					$var: 10px;
+
+
+
+					z-index: 10 !ignore;
+					align-items: middle !ignore;
+
+				}
+			}`,
+			`.sel {
+				$var: 20px;
+
+				&__nested {
+					$var: 10px;
+
+					z-index: 10 !ignore;
+					align-items: middle !ignore;
+				}
+			}`);
+	});
+
 	it('should ignore variable declaration', () => {
 		return process(
 			`.sel {
@@ -159,29 +234,19 @@ describe('Alphabetization', () => {
 			}`);
 	});
 
-	it('should remove extraneous new lines', () => {
+	it('should ignore lines preceeded by comments', () => {
 		return process(
 			`.sel {
-				$var: 20px;
-				&__nested {
-					$var: 10px;
-
-
-
-					z-index: 10 !ignore;
-					align-items: middle !ignore;
-
-				}
+				// Comment
+				z-index: 100;
+				vertical-align: middle;
+				text-align: center;
 			}`,
 			`.sel {
-				$var: 20px;
-
-				&__nested {
-					$var: 10px;
-
-					z-index: 10 !ignore;
-					align-items: middle !ignore;
-				}
-			}`);
+				// Comment
+				z-index: 100;
+				text-align: center;
+				vertical-align: middle;
+			}`)
 	});
 });
