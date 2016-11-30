@@ -158,4 +158,30 @@ describe('Alphabetization', () => {
 				}
 			}`);
 	});
+
+	it('should remove extraneous new lines', () => {
+		return process(
+			`.sel {
+				$var: 20px;
+				&__nested {
+					$var: 10px;
+
+
+
+					z-index: 10 !ignore;
+					align-items: middle !ignore;
+
+				}
+			}`,
+			`.sel {
+				$var: 20px;
+
+				&__nested {
+					$var: 10px;
+
+					z-index: 10 !ignore;
+					align-items: middle !ignore;
+				}
+			}`);
+	});
 });
