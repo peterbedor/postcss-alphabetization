@@ -18,7 +18,7 @@ function processFail(input, expected, opts = {}) {
 		});
 }
 
-describe('Alphabetizaiton', () => {
+describe('Alphabetization', () => {
 	it('should alphabetize properts', () => {
 		return process(
 			`.sel {
