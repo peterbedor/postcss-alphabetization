@@ -153,13 +153,20 @@ describe('Alphabetization', () => {
 	it('should remove extraneous new lines', () => {
 		return process(
 			`.sel {
+
+
 				$var: 20px;
+				
+
+
 				&__nested {
+
 					$var: 10px;
 
 
 
 					z-index: 10 !ignore;
+
 					align-items: middle !ignore;
 
 				}
@@ -201,13 +208,19 @@ describe('Alphabetization', () => {
 			`.sel {
 				$var: 10px;
 				z-index: 10 !ignore;
-				align-items: middle !ignore
+				background-color: red !ignore;
+				align-items: middle !ignore;
+				position: absolute;
+				left: 10px;
 			}`,
 			`.sel {
 				$var: 10px;
 
 				z-index: 10 !ignore;
-				align-items: middle !ignore
+				background-color: red !ignore;
+				align-items: middle !ignore;
+				left: 10px;
+				position: absolute;
 			}`);
 	});
 
@@ -220,6 +233,8 @@ describe('Alphabetization', () => {
 
 					z-index: 10 !ignore;
 					align-items: middle !ignore;
+					position: absolute;
+					left: 10px;
 				}
 			}`,
 			`.sel {
@@ -230,6 +245,8 @@ describe('Alphabetization', () => {
 
 					z-index: 10 !ignore;
 					align-items: middle !ignore;
+					left: 10px;
+					position: absolute;
 				}
 			}`);
 	});
@@ -248,5 +265,69 @@ describe('Alphabetization', () => {
 				text-align: center;
 				vertical-align: middle;
 			}`)
+	});
+
+	it('should mostly work with weird syntax', () => {
+		return process(
+			`.sel {
+				!789test: 30px;
+				!345test: 20px;
+				!456test: 10px;
+				fcool: 50px;
+				123test: 30px;
+			}`,
+			`.sel {
+				!345test: 20px;
+				!456test: 10px;
+				!789test: 30px;
+				123test: 30px;
+				fcool: 50px;
+			}`);
+	});
+
+	it('should move variable properties to the top', () => {
+		return process(
+			`.sel {
+				z-index: 10;
+				text-align: center;
+				background-color: red;
+				$(zed): purple;
+				vertical-align: middle;
+				$(alpha): red;
+				$(bravo): orange !ignore;
+			}`,
+			`.sel {
+				$(alpha): red;
+				$(zed): purple;
+				background-color: red;
+				text-align: center;
+				vertical-align: middle;
+				z-index: 10;
+				$(bravo): orange !ignore;
+			}`);
+	});
+
+	it('should ignore top level variables', () => {
+		return process(
+			`$var: 20px;
+			$beta.nested: 50px;
+			$alpha: 10px;
+
+			.sel {
+				z-index: 10;
+				text-align: center;
+				background-color: red;
+				vertical-align: middle;
+			}`,
+			`$var: 20px;
+			$beta.nested: 50px;
+			$alpha: 10px;
+
+			.sel {
+				background-color: red;
+				text-align: center;
+				vertical-align: middle;
+				z-index: 10;
+			}`);
 	});
 });
