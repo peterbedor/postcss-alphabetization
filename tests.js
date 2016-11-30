@@ -19,7 +19,7 @@ function processFail(input, expected, opts = {}) {
 }
 
 describe('Alphabetization', () => {
-	it('should alphabetize properts', () => {
+	it('should alphabetize properties', () => {
 		return process(
 			`.sel {
 				display: block;
