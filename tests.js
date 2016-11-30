@@ -122,6 +122,116 @@ describe('Alphabetization', () => {
 				}`)
 		});
 
+		it('should go as deep as necessary', () => {
+			return process(
+				`$sel {
+					z-index: 100;
+					align-items: middle;
+					&__nested {
+						vertical-align: middle;
+						font-weight: 20px;
+						font-size: 10px;
+						&__nested-two {
+							display: block;
+							background-color: red;
+							&__nested-three {
+								position: absolute;
+								transform: translateX(-40px);
+								&__nested-four {
+									position: absolute;
+									transform: translateX(-40px);
+									&__nested-five {
+										vertical-align: middle;
+										font-weight: 20px;
+										&.-modifier {
+											vertical-align: middle;
+											font-weight: 20px;
+											&.-modifer-two {
+												vertical-align: middle;
+												font-weight: 20px;
+												&.-modifer-three {
+													font-size: 10px;
+													&._modifer-four {
+														$(sel) {
+															vertical-align: middle;
+															font-weight: 20px;
+															&__lets {
+																z-index: 100;
+																vertical-align: middle;
+																&__go {
+																	z-index: 100;
+																	&__deeper {
+																		z-index: 100;
+																		vertical-align: middle;
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}`,
+				`$sel {
+					align-items: middle;
+					z-index: 100;
+					&__nested {
+						font-size: 10px;
+						font-weight: 20px;
+						vertical-align: middle;
+						&__nested-two {
+							background-color: red;
+							display: block;
+							&__nested-three {
+								position: absolute;
+								transform: translateX(-40px);
+								&__nested-four {
+									position: absolute;
+									transform: translateX(-40px);
+									&__nested-five {
+										font-weight: 20px;
+										vertical-align: middle;
+										&.-modifier {
+											font-weight: 20px;
+											vertical-align: middle;
+											&.-modifer-two {
+												font-weight: 20px;
+												vertical-align: middle;
+												&.-modifer-three {
+													font-size: 10px;
+													&._modifer-four {
+														$(sel) {
+															font-weight: 20px;
+															vertical-align: middle;
+															&__lets {
+																vertical-align: middle;
+																z-index: 100;
+																&__go {
+																	z-index: 100;
+																	&__deeper {
+																		vertical-align: middle;
+																		z-index: 100;
+																	}
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							}
+						}
+					}
+				}`)
+		});
+
 		it('should alphabetize state properties', () => {
 			return process(
 				`a {
