@@ -71,7 +71,7 @@ describe('Alphabetization', () => {
 			}`)
 	});
 
-	it('should alphabetize state modifiers', () => {
+	it('should alphabetize state properties', () => {
 		return process(
 			`a {
 				z-index: 100;
