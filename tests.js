@@ -21,19 +21,35 @@ function processFail(input, expected, opts = {}) {
 describe('Alphabetization', () => {
 	describe('Simple', () => {
 		it('should alphabetize properties', () => {
-		return process(
-			`.sel {
-				display: block;
-				z-index: 10;
-				align-items: middle;
-				vertical-align: middle;
-			}`,
-			`.sel {
-				align-items: middle;
-				display: block;
-				vertical-align: middle;
-				z-index: 10;
-			}`)
+			return process(
+				`.sel {
+					display: block;
+					z-index: 10;
+					align-items: middle;
+					vertical-align: middle;
+				}`,
+				`.sel {
+					align-items: middle;
+					display: block;
+					vertical-align: middle;
+					z-index: 10;
+				}`)
+
+			it('should alphabetize mixins', () => {
+				return process(
+					`.sel {
+						display(block);
+						z-index(10);
+						align-items(middle);
+						align(middle);
+					}`,
+					`.sel {
+						align(middle);
+						align-items(middle);
+						display(block);
+						z-index: 10;
+					}`)
+			});
 	});
 
 	it('should alphabetize dashed properties', () => {
@@ -339,5 +355,54 @@ describe('Misc', () => {
 				123test: 30px;
 				fcool: 50px;
 			}`);
+	});
+});
+
+describe('Options', () => {
+	it('opt.sortVariables should sort variables', () => {
+		return process(
+			`.sel {
+				$zed: 10px;
+				$alpha: 20px;
+				display: block;
+				z-index: 10;
+				align-items: middle;
+				vertical-align: middle;
+			}`,
+			`.sel {
+				$alpha: 20px;
+				$zed: 10px;
+
+				align-items: middle;
+				display: block;
+				vertical-align: middle;
+				z-index: 10;
+			}`,
+			{
+				sortVariables: true
+			})
+	});
+
+	it('opt.noNewLineAfterVars should disable new lines after var declaration blocks', () => {
+		return process(
+			`.sel {
+				$zed: 10px;
+				$alpha: 20px;
+				display: block;
+				z-index: 10;
+				align-items: middle;
+				vertical-align: middle;
+			}`,
+			`.sel {
+				$zed: 10px;
+				$alpha: 20px;
+				align-items: middle;
+				display: block;
+				vertical-align: middle;
+				z-index: 10;
+			}`,
+			{
+				noNewLineAfterVars: true
+			})
 	});
 });

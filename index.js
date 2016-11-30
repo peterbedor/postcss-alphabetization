@@ -1,7 +1,7 @@
 const postcss = require('postcss');
 
 module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
-	const isVariableDeclaration = /^\$[\w-]+$/;
+	const isVariableDeclaration = /^\$[\w-.]+$/;
 
 	/**
 	 * Alphabetize properties
@@ -17,7 +17,9 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 		nodes.sort(dynamicSort('prop'));
 
 		// Add a new line after variable declarations
-		nodes = addNewLineAfterVars(nodes);
+		if (! opts.noNewLineAfterVars) {
+			nodes = addNewLineAfterVars(nodes);
+		}
 	}
 
 	/**
@@ -94,6 +96,10 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 		let val = node.value,
 			prop = node.prop,
 			sortVars = opts.sortVariables === true;
+
+		if (sortVars) {
+			return ! (val && val.includes('!ignore'));
+		}
 
 		return ! (
 			(prop && isVar(prop)) || (val && val.includes('!ignore'))
