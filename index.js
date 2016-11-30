@@ -1,12 +1,11 @@
 const postcss = require('postcss');
 
 module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
-	let result;
-	
 	const isVariableDeclaration = /^\$[\w-]+$/;
-	const ignore = /!ignore/g;
 
 	/**
+	 * Alphabetize properties
+	 * 
 	 * @param  {postcss.Rule} nodes
 	 * @return {postcss.Rule} nodes
 	 */
@@ -28,13 +27,16 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 	 * @return {postcss.Rule} nodes
 	 */
 	function stripNewLines(nodes) {
-		each(nodes, (node, i) => {
-			node.raws.before = node.raws.before.replace(/\n\s*\n/g, '\n');
+		let reg = /\n\s*\n/g,
+			repl = '\n';
+
+		each(nodes, (node) => {
+			node.raws.before = node.raws.before.replace(reg, repl);
 
 
 			// Remove extraneous newlines on the last declaration if they exist
 			if (! node.next() && node.raws.after) {
-				node.raws.after = node.raws.after.replace(/\n\s*\n/g, '\n');
+				node.raws.after = node.raws.after.replace(reg, repl);
 			}
 		});
 
@@ -49,7 +51,7 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 	function addNewLineAfterVars(nodes) {
 		let c = 0;
 
-		each(nodes, (node, i) => {
+		each(nodes, (node) => {
 			if (node.prop && isVar(node.prop)) {
 				c++;
 			}
