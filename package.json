@@ -1,0 +1,18 @@
+{
+  "name": "postcss-alphabetize",
+  "version": "0.1.0",
+  "description": "Alphabetize css properties",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha ./tests.js"
+  },
+  "author": "Peter Bedor",
+  "license": "ISC",
+  "dependencies": {
+    "postcss": "^5.2.6"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "mocha": "^3.2.0"
+  }
+}
