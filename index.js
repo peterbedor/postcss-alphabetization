@@ -2,10 +2,11 @@ const postcss = require('postcss');
 
 module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 	const isVariableDeclaration = /^\$[\w-.]+$/;
+	const ignore = '!ignore';
 
 	/**
 	 * Alphabetize properties
-	 * 
+	 *
 	 * @param  {postcss.Rule} nodes
 	 * @return {postcss.Rule} nodes
 	 */
@@ -18,19 +19,19 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 
 		// Add a new line after variable declarations
 		if (! opts.noNewLineAfterVars) {
-			nodes = addNewLineAfterVars(nodes);
+			addNewLineAfterVars(nodes);
 		}
 	}
 
 	/**
 	 * Remove extraneous newlines
-	 * 
+	 *
 	 * @param  {postcss.Rule} nodes
 	 * @return {postcss.Rule} nodes
 	 */
 	function stripNewLines(nodes) {
-		let reg = /\n\s*\n/g,
-			repl = '\n';
+		let reg = /\n\s*\n/g;
+		let	repl = '\n';
 
 		each(nodes, (node) => {
 			node.raws.before = node.raws.before.replace(reg, repl);
@@ -47,7 +48,7 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 
 	/**
 	 * Add a new line after variable declaration blocks
-	 * 
+	 *
 	 * @param {postcss.Rule} nodes
 	 */
 	function addNewLineAfterVars(nodes) {
@@ -68,16 +69,16 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 	}
 
 	/**
-	 * Sort properties 
-	 * 
+	 * Sort properties
+	 *
 	 * @param  {string} property
-	 * @return {Array}
+	 * @return {Function}
 	 */
 	function dynamicSort(prop) {
-		return function (a, b) {
+		return (a, b) => {
 			if (proceedWith(a) && proceedWith(b)) {
-				let propA = a[prop],
-					propB = b[prop];
+				let propA = a[prop];
+				let	propB = b[prop];
 
 				return ((propA < propB) ? -1 : (propA > propB) ? 1 : 0);
 			}
@@ -88,21 +89,21 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 
 	/**
 	 * Determine whether to proceed with the current sort
-	 * 
+	 *
 	 * @param  {postcss.Rule} node
 	 * @return {boolean}
 	 */
 	function proceedWith(node) {
-		let val = node.value,
-			prop = node.prop,
-			sortVars = opts.sortVariables === true;
+		let val = node.value;
+		let	prop = node.prop;
+		let	sortVars = opts.sortVariables === true;
 
 		if (sortVars) {
-			return ! (val && val.includes('!ignore'));
+			return ! (val && val.includes(ignore));
 		}
 
 		return ! (
-			(prop && isVar(prop)) || (val && val.includes('!ignore'))
+			(prop && isVar(prop)) || (val && val.includes(ignore))
 		)
 	}
 
@@ -115,8 +116,8 @@ module.exports = postcss.plugin('postcss-alphabetize', (opts = {}) => {
 	 * @param  {Function} callback function
 	 */
 	function each(arr, cb) {
-		let len = arr.length,
-			i = 0;
+		let len = arr.length;
+		let	i = 0;
 
 		for (; i < len; i++) {
 			cb(arr[i], i);
